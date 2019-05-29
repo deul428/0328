@@ -1,0 +1,16 @@
+midwest<-as.data.frame(ggplot2::midwest) # 데이터 프레임 만들기
+library(dplyr) # dplyr 라이브러리 부착
+library(ggplot2) # ggplot2 라이브러리 부착
+new<-midwest # 복사본 만들기
+new
+
+new<-new %>% 
+    mutate(ratio_children=(poptotal-popadults)/poptotal*100) # 전체 인구 대비 미성년 인구 백분율을 계산해, ratio_children 변수를 새로 생성하여 저장
+new %>% 
+    arrange(desc(ratio_children)) %>% # 내림차순으로 정렬
+    select(county, ratio_children) %>%  # county, ratio_children 열 추출
+    head(5) # 1-5위까지 출력
+new <- new%>%
+    mutate(grade=ifelse(ratio_children>=40, "large", 
+        ifelse(ratio_children>=30, "middle", "small"))) # 조건문을 사용해 ratio_children이 40 이상이면 large, 30 이상이면 middle, 그 밖이면 small로 분류해 grade라는 새 변수에 저장
+table(new$grade) //grade 통계 내기
